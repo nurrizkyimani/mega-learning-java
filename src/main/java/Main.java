@@ -2,9 +2,8 @@ public class Main {
   public static void main(String[] args) {
     System.out.println("Hello world!");
   }
-
-
 }
+
 
 
 // 33. Search in Rotated Sorted Array
@@ -38,4 +37,54 @@ class Solution {
       return -1; 
   }
 
+  // https://leetcode.com/problems/length-of-longest-subarray-with-at-most-k-frequency/description/
+  // 2958. Length of Longest Subarray With at Most K Frequency
+  public int maxSubarrayLength(int[] nums, int k) {
+
+      HashMap<Integer, Integer> map = new HashMap<>();
+
+      int left = -1;
+      int n = nums.length; 
+      int res = 0; 
+      for(int right =0; right < n; right++){
+          map.put(nums[right], map.getOrDefault(nums[right], 0) + 1); 
+
+          while(map.get(nums[right]) > k){
+
+              left++; 
+
+              map.put(nums[left], map.get(nums[left]) - 1);
+
+          }
+
+          res = Math.max(res, right - left);
+      }
+
+      return res; 
+
+
+  }
+
+public int[][] intervalIntersection(int[][] firstList, int[][] secondList) {
+    int i = 0;
+    int j = 0; 
+    int startMax = 0, endMin = 0;
+
+    List<int[]> ans = new ArrayList<>();
+    while(i < firstList.length && j < secondList.length){
+        startMax = Math.max(firstList[i][0],secondList[j][0]);
+        endMin = Math.min(firstList[i][1],secondList[j][1]);
+
+        //you have end greater than start and you already know that this interval is sorrounded with startMin and endMax so this must be the intersection
+        if(endMin>=startMax){           
+            ans.add(new int[]{startMax,endMin});
+        }
+
+        //the interval with min end has been covered completely and have no chance to intersect with any other interval so move that list's pointer
+        if(endMin == firstList[i][1]) i++;       
+        if(endMin == secondList[j][1]) j++;
+    }
+
+    return ans.toArray(new int[ans.size()][2]);
+}
 }
