@@ -65,26 +65,63 @@ class Solution {
 
   }
 
-public int[][] intervalIntersection(int[][] firstList, int[][] secondList) {
-    int i = 0;
-    int j = 0; 
-    int startMax = 0, endMin = 0;
-
-    List<int[]> ans = new ArrayList<>();
-    while(i < firstList.length && j < secondList.length){
-        startMax = Math.max(firstList[i][0],secondList[j][0]);
-        endMin = Math.min(firstList[i][1],secondList[j][1]);
-
-        //you have end greater than start and you already know that this interval is sorrounded with startMin and endMax so this must be the intersection
-        if(endMin>=startMax){           
-            ans.add(new int[]{startMax,endMin});
+    public int[][] intervalIntersection(int[][] firstList, int[][] secondList) {
+        int i = 0;
+        int j = 0; 
+        int startMax = 0, endMin = 0;
+    
+        List<int[]> ans = new ArrayList<>();
+        while(i < firstList.length && j < secondList.length){
+            startMax = Math.max(firstList[i][0],secondList[j][0]);
+            endMin = Math.min(firstList[i][1],secondList[j][1]);
+    
+            //you have end greater than start and you already know that this interval is sorrounded with startMin and endMax so this must be the intersection
+            if(endMin>=startMax){           
+                ans.add(new int[]{startMax,endMin});
+            }
+    
+            //the interval with min end has been covered completely and have no chance to intersect with any other interval so move that list's pointer
+            if(endMin == firstList[i][1]) i++;       
+            if(endMin == secondList[j][1]) j++;
         }
-
-        //the interval with min end has been covered completely and have no chance to intersect with any other interval so move that list's pointer
-        if(endMin == firstList[i][1]) i++;       
-        if(endMin == secondList[j][1]) j++;
+    
+        return ans.toArray(new int[ans.size()][2]);
     }
 
-    return ans.toArray(new int[ans.size()][2]);
-}
+    public List<Integer> largestDivisibleSubset(int[] nums) {
+
+        int n = nums.length; 
+        int[] l = new int[n];
+        int[] prev = new int[n];
+
+
+        Arrays.sort(nums);
+
+        int max = 0;
+        int index = -1;
+
+        for(int i=0; i < n; i++){
+            l[i] = 1;
+            prev[i] = -1;
+            for(int j=i-1; j >= 0; j--){
+                if(nums[i] % nums[j] == 0 && l[j] + 1 > l[i]){
+                    l[i] = l[j] + 1;
+                    prev[i] = j; 
+                }
+            }
+
+            if (l[i] > max){
+                max = l[i];
+                index = i; 
+            }
+        }
+
+        List<Integer> res = new ArrayList<>();
+        while(index != -1){
+            res.add(nums[index]);
+            index = prev[index];
+        }
+
+        return res; 
+    }
 }
