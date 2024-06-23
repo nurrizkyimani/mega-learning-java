@@ -228,4 +228,86 @@ class Solution {
 
         return ballsPlaced == m; 
     }
+
+    // 1282. Group the People Given the Group Size They Belong To
+    public List<List<Integer>> groupThePeople(int[] groupSizes) {
+        ArrayList<List<Integer>> res = new ArrayList<>();
+
+        Map<Integer, List<Integer>>  map = new HashMap<>(); 
+
+        for(int i=0; i < groupSizes.length; i++){
+
+            int key = groupSizes[i];
+
+            if(!map.containsKey(key)){
+                map.put(key, new ArrayList<>());
+            }               
+
+            List<Integer> g = map.get(key);
+            g.add(i);
+
+            if(g.size() == key){
+                res.add(g);
+                map.remove(key);
+            }
+        }
+
+        return res;
+    }
+
+    // https://leetcode.com/problems/optimal-partition-of-string/
+    public int partitionString(String s) {
+
+        int n  = s.length();
+        int[] freq = new int[26];
+
+        int left = 0; 
+        int count = 0; 
+        for(int right=0; right < n; right++ ){
+            char rightChar = s.charAt(right);
+
+            freq[rightChar - 'a']++; 
+
+            if(freq[rightChar - 'a'] > 1){
+                count++; 
+                while(left < right){
+                    freq[ s.charAt(left) - 'a']++;
+
+                    left++; 
+                }   
+            }
+
+        }
+
+
+        return count + 1; 
+
+    }
+
+    //https://leetcode.com/problems/minimum-substring-partition-of-equal-character-frequency/
+    public int minimumSubstringsInPartition(String s) {
+
+        int n = s.length();
+        int[] dp = new int[n+1];
+        Arrays.fill(dp, n);
+        dp[n] = 0;
+
+
+        for(int i=n -1; i >=0; i--){
+            int[] cnt = new int[26];
+            int unique=0, maxCnt=0;
+
+            for(int sz=1; i + sz <= s.length(); sz++){
+                int index = s.charAt(i + sz -1) - 'a';
+                if(++cnt[index] == 1) unique++; 
+                maxCnt = Math.max(maxCnt, cnt[index]);
+
+                if(sz == unique * maxCnt){
+                    dp[i] = Math.min(dp[i], 1 + dp[i + sz]);
+                }
+            }
+        }
+
+        return dp[0];
+    }
 }
